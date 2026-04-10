@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% set active_page = 'debug' %}
+
+{% block title %}Debug - Driveline{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">OSC Database Debug</h3>
+    </div>
+    <div class="card-body">
+        <p class="text-muted mb-md">Real-time view of all OSC values in the database. Updates automatically every 1 second.</p>
+
+        <table class="debug-table">
+            <thead>
+                <tr>
+                    <th>OSC Path</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-debug-path="/automation/wall0/pos_x">
+                    <td><code>/automation/wall0/pos_x</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/automation/wall1/pos_x">
+                    <td><code>/automation/wall1/pos_x</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/automation/turntable/rot_y">
+                    <td><code>/automation/turntable/rot_y</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/automation/turntable/rot_y_ro">
+                    <td><code>/automation/turntable/rot_y_ro</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/d3/showcontrol/heartbeat">
+                    <td><code>/d3/showcontrol/heartbeat</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/d3/showcontrol/trackname">
+                    <td><code>/d3/showcontrol/trackname</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/d3/showcontrol/currentsectionname">
+                    <td><code>/d3/showcontrol/currentsectionname</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/d3/showcontrol/nextsectionname">
+                    <td><code>/d3/showcontrol/nextsectionname</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/d3/showcontrol/sectionhint">
+                    <td><code>/d3/showcontrol/sectionhint</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/d3/showcontrol/playmode">
+                    <td><code>/d3/showcontrol/playmode</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+                <tr data-debug-path="/d3/showcontrol/trackposition">
+                    <td><code>/d3/showcontrol/trackposition</code></td>
+                    <td class="debug-value"><code>No value</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mt-md">
+    <div class="card-header">
+        <h3 class="card-title">System Information</h3>
+    </div>
+    <div class="card-body">
+        <div class="dashboard-grid">
+            <div class="display-card">
+                <h3>Show Close Time</h3>
+                <p class="display-value" data-showtime="show_close" style="font-size: var(--font-size-base);">Loading...</p>
+            </div>
+            <div class="display-card">
+                <h3>Next Showtime</h3>
+                <p class="display-value" data-showtime="next_show" style="font-size: var(--font-size-base);">Loading...</p>
+            </div>
+            <div class="display-card">
+                <h3>Sequence Time FYI</h3>
+                <p class="display-value multiline" data-showtime="seq_fyi" style="font-size: var(--font-size-sm);">Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

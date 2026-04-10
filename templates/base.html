@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Driveline - Show Control{% endblock %}</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="site-branding">
+                <h1 class="site-title">Driveline</h1>
+                <span class="site-subtitle">Show Control System</span>
+            </div>
+
+            <nav class="site-nav">
+                <a href="{{ url_for('index') }}" class="nav-link {% if active_page == 'dashboard' %}active{% endif %}">
+                    Dashboard
+                </a>
+                <a href="{{ url_for('status') }}" class="nav-link {% if active_page == 'status' %}active{% endif %}">
+                    Status
+                </a>
+                <a href="{{ url_for('advanced') }}" class="nav-link {% if active_page == 'advanced' %}active{% endif %}">
+                    Advanced
+                </a>
+                <a href="{{ url_for('debug') }}" class="nav-link {% if active_page == 'debug' %}active{% endif %}">
+                    Debug
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p class="footer-text">&copy; 2026 Driveline Show Control System</p>
+        </div>
+    </footer>
+
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/socket.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

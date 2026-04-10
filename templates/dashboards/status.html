@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% set active_page = 'status' %}
+
+{% block title %}Status - Driveline{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+
+    <!-- Connection Status -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">System Status</h3>
+        </div>
+        <div class="card-body">
+            <div class="status-indicator">
+                <span class="status-dot active"></span>
+                <span>Socket.IO Connected</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- OSC Listeners -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">OSC Listeners</h3>
+        </div>
+        <div class="card-body">
+            <div class="status-indicator">
+                <span class="status-dot active"></span>
+                <span>D3 (Port 7400)</span>
+            </div>
+            <div class="status-indicator mt-sm">
+                <span class="status-dot active"></span>
+                <span>Automation (Port 7587)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Automation Values -->
+    <div class="display-card">
+        <h3>Wall 0 Position X</h3>
+        <p class="display-value" data-osc-path="/automation/wall0/pos_x">0.00</p>
+    </div>
+
+    <div class="display-card">
+        <h3>Wall 1 Position X</h3>
+        <p class="display-value" data-osc-path="/automation/wall1/pos_x">0.00</p>
+    </div>
+
+    <div class="display-card">
+        <h3>Turntable Rotation Y</h3>
+        <p class="display-value" data-osc-path="/automation/turntable/rot_y">0.00</p>
+    </div>
+
+    <div class="display-card">
+        <h3>Turntable Rotation Y RO</h3>
+        <p class="display-value" data-osc-path="/automation/turntable/rot_y_ro">0.00</p>
+    </div>
+
+    <!-- D3 Status -->
+    <div class="card grid-full">
+        <div class="card-header">
+            <h3 class="card-title">D3 Status</h3>
+        </div>
+        <div class="card-body">
+            <div class="dashboard-grid">
+                <div class="display-card">
+                    <h3>Track Name</h3>
+                    <p class="display-value" data-osc-path="/d3/showcontrol/trackname">No track</p>
+                </div>
+                <div class="display-card">
+                    <h3>Current Section</h3>
+                    <p class="display-value" data-osc-path="/d3/showcontrol/currentsectionname">No section</p>
+                </div>
+                <div class="display-card">
+                    <h3>Next Section</h3>
+                    <p class="display-value" data-osc-path="/d3/showcontrol/nextsectionname">No section</p>
+                </div>
+                <div class="display-card">
+                    <h3>Play Mode</h3>
+                    <p class="display-value" data-osc-path="/d3/showcontrol/playmode">Unknown</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

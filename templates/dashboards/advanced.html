@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% set active_page = 'advanced' %}
+
+{% block title %}Advanced Controls - Driveline{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+
+    <!-- EventMaster Presets -->
+    <div class="control-group">
+        <h3>EventMaster Presets</h3>
+        <div>
+            <button class="button button-primary" data-eventmaster-preset="D3 - A">D3 - A</button>
+            <button class="button button-primary" data-eventmaster-preset="D3 - B">D3 - B</button>
+        </div>
+    </div>
+
+    <!-- Millumin Columns -->
+    <div class="control-group">
+        <h3>Millumin Columns</h3>
+        <div>
+            <button class="button button-success" data-millumin-column="chicago">Chicago</button>
+            <button class="button button-success" data-millumin-column="newyork">New York</button>
+            <button class="button button-success" data-millumin-column="losangeles">Los Angeles</button>
+        </div>
+    </div>
+
+    <!-- D3 Advanced Controls -->
+    <div class="control-group">
+        <h3>D3 Advanced Cues</h3>
+        <div>
+            <button class="button button-secondary" data-d3-cue="500">Cue 500</button>
+            <button class="button button-secondary" data-d3-cue="600" data-d3-clean="true">Cue 600 (Clean)</button>
+            <button class="button button-secondary" data-d3-cue="700">Cue 700</button>
+            <button class="button button-secondary" data-d3-cue="800" data-d3-clean="true">Cue 800 (Clean)</button>
+        </div>
+    </div>
+
+    <!-- StageTimer Blackout Controls -->
+    <div class="control-group">
+        <h3>StageTimer Blackout</h3>
+        <div>
+            <button class="button button-warning" data-stagetimer-action="enable_blackout">Enable Blackout</button>
+            <button class="button button-success" data-stagetimer-action="disable_blackout">Disable Blackout</button>
+        </div>
+    </div>
+
+    <!-- Custom Timer Presets -->
+    <div class="control-group">
+        <h3>Custom Timer Presets</h3>
+        <div>
+            <button class="button button-primary" data-stagetimer-action="update_timer" data-stagetimer-minutes="1" data-stagetimer-seconds="0">1:00</button>
+            <button class="button button-primary" data-stagetimer-action="update_timer" data-stagetimer-minutes="2" data-stagetimer-seconds="0">2:00</button>
+            <button class="button button-primary" data-stagetimer-action="update_timer" data-stagetimer-minutes="15" data-stagetimer-seconds="0">15:00</button>
+            <button class="button button-primary" data-stagetimer-action="update_timer" data-stagetimer-minutes="30" data-stagetimer-seconds="0">30:00</button>
+        </div>
+    </div>
+
+    <!-- Quick D3 Controls -->
+    <div class="control-group">
+        <h3>Quick D3 Controls</h3>
+        <div>
+            <button class="button button-secondary" data-d3-cue="10">Cue 10</button>
+            <button class="button button-secondary" data-d3-cue="20">Cue 20</button>
+            <button class="button button-secondary" data-d3-cue="30">Cue 30</button>
+            <button class="button button-secondary" data-d3-cue="40">Cue 40</button>
+        </div>
+    </div>
+
+    <!-- Showtime Schedule Quick Select -->
+    <div class="control-group grid-full">
+        <h3>Showtime Schedule Quick Select</h3>
+        <div>
+            <button class="button button-primary" data-showtimes="09:00, 10:30, 12:00, 13:30, 15:30, 17:00, 18:30, 20:00">
+                Standard Schedule
+            </button>
+            <button class="button button-primary" data-showtimes="10:00, 11:30, 13:00, 14:30, 16:30, 18:00, 19:30, 21:00">
+                Late Schedule
+            </button>
+            <button class="button button-primary" data-showtimes="08:00, 09:30, 11:00, 12:30, 14:30, 16:00, 17:30, 19:00">
+                Early Schedule
+            </button>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

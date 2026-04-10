@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% set active_page = 'dashboard' %}
+
+{% block title %}Dashboard - Driveline{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+
+    <!-- Show Close Countdown -->
+    <div class="display-card">
+        <h3>Show Close Countdown</h3>
+        <p class="display-value" data-showtime="show_close">Loading...</p>
+    </div>
+
+    <!-- Sequence Time FYI -->
+    <div class="display-card">
+        <h3>Sequence Time FYI</h3>
+        <p class="display-value multiline" data-showtime="seq_fyi">Loading...</p>
+    </div>
+
+    <!-- Next Showtime -->
+    <div class="display-card">
+        <h3>Next Showtime</h3>
+        <p class="display-value" data-showtime="next_show">Loading...</p>
+    </div>
+
+    <!-- D3 Heartbeat -->
+    <div class="display-card">
+        <h3>D3 Heartbeat</h3>
+        <p class="display-value" data-osc-path="/d3/showcontrol/heartbeat">No signal</p>
+    </div>
+
+    <!-- D3 Track Position -->
+    <div class="display-card">
+        <h3>Track Position</h3>
+        <p class="display-value" data-osc-path="/d3/showcontrol/trackposition">00:00:00</p>
+    </div>
+
+    <!-- Section Hint -->
+    <div class="display-card">
+        <h3>Section Hint</h3>
+        <p class="display-value" data-showtime="section_hint">No hint</p>
+    </div>
+
+    <!-- Showtime Schedule Controls -->
+    <div class="control-group grid-full">
+        <h3>Showtime Schedule</h3>
+        <div>
+            <button class="button button-primary" data-showtimes="09:00, 10:30, 12:00, 13:30, 15:30, 17:00, 18:30, 20:00, 21:30">
+                Schedule A
+            </button>
+            <button class="button button-primary" data-showtimes="09:30, 11:00, 12:30, 14:00, 16:00, 17:30, 19:00, 20:30, 22:00">
+                Schedule B
+            </button>
+            <button class="button button-primary" data-showtimes="10:00, 11:30, 13:00, 14:30, 16:30, 18:00, 19:30, 21:00, 22:30">
+                Schedule C
+            </button>
+        </div>
+    </div>
+
+    <!-- D3 Cue Controls -->
+    <div class="control-group">
+        <h3>D3 Cues</h3>
+        <div>
+            <button class="button button-secondary" data-d3-cue="100">Cue 100</button>
+            <button class="button button-secondary" data-d3-cue="200" data-d3-clean="true">Cue 200 (Clean)</button>
+            <button class="button button-secondary" data-d3-cue="300">Cue 300</button>
+        </div>
+    </div>
+
+    <!-- StageTimer Controls -->
+    <div class="control-group">
+        <h3>StageTimer Controls</h3>
+        <div>
+            <button class="button button-success" data-stagetimer-action="start_timer">Start</button>
+            <button class="button button-danger" data-stagetimer-action="stop_timer">Stop</button>
+            <button class="button button-secondary" data-stagetimer-action="reset_timer">Reset</button>
+        </div>
+        <div class="mt-sm">
+            <button class="button button-primary" data-stagetimer-action="update_timer" data-stagetimer-minutes="3" data-stagetimer-seconds="30">3:30</button>
+            <button class="button button-primary" data-stagetimer-action="update_timer" data-stagetimer-minutes="5" data-stagetimer-seconds="0">5:00</button>
+            <button class="button button-primary" data-stagetimer-action="update_timer" data-stagetimer-minutes="10" data-stagetimer-seconds="0">10:00</button>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

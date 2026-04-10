@@ -1,0 +1,49 @@
+# Default Development configuration with hot-reload
+# Use this for development: docker-compose up
+# For production, use: docker-compose -f docker-compose.prod.yml up
+version: '3.8'
+
+services:
+  driveline:
+    build: .
+    container_name: driveline-dev
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-5000}:${WEB_PORT:-5000}"
+      - "${D3_OSC_IN_PORT:-7400}:${D3_OSC_IN_PORT:-7400}/udp"
+      - "${AUTOMATION_OSC_IN_PORT:-7587}:${AUTOMATION_OSC_IN_PORT:-7587}/udp"
+    environment:
+      - TZ=America/New_York
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
+      - SHOW_CLOSE=${SHOW_CLOSE}
+      - SEQ_TIME_DRONE_DEPLOY=${SEQ_TIME_DRONE_DEPLOY}
+      - SEQ_TIME_ACT2_START=${SEQ_TIME_ACT2_START}
+      - SEQ_TIME_PRESENTER_START=${SEQ_TIME_PRESENTER_START}
+      - SEQ_TIME_PRESENTER_END=${SEQ_TIME_PRESENTER_END}
+      - SEQ_TIME_RESET_START=${SEQ_TIME_RESET_START}
+      - SEQ_TIME_RESET_END=${SEQ_TIME_RESET_END}
+      - SEQ_TIME_TIMELINE_END=${SEQ_TIME_TIMELINE_END}
+      - AUTOMATION_OSC_IN_PORT=${AUTOMATION_OSC_IN_PORT}
+      - AUTOMATION_OSC_OUT_ADDRESS=${AUTOMATION_OSC_OUT_ADDRESS}
+      - AUTOMATION_OSC_OUT_PORT=${AUTOMATION_OSC_OUT_PORT}
+      - D3_OSC_IN_PORT=${D3_OSC_IN_PORT}
+      - D3_OSC_OUT_ADDRESS=${D3_OSC_OUT_ADDRESS}
+      - D3_OSC_OUT_PORT=${D3_OSC_OUT_PORT}
+      - MILLUMIN_OUT_ADDRESS=${MILLUMIN_OUT_ADDRESS}
+      - MILLUMIN_OUT_PORT=${MILLUMIN_OUT_PORT}
+      - STAGETIMER_OUT_URL=${STAGETIMER_OUT_URL}
+      - STAGETIMER_OUT_SUFFIX=${STAGETIMER_OUT_SUFFIX}
+      - EVENTMASTER_OUT_ADDRESS=${EVENTMASTER_OUT_ADDRESS}
+      - GOOGLE_SPREADSHEET_ID=${GOOGLE_SPREADSHEET_ID}
+      - GOOGLE_SPREADSHEET_CELLS=${GOOGLE_SPREADSHEET_CELLS}
+      - GOOGLE_CREDENTIALS_JSON=${GOOGLE_CREDENTIALS_JSON}
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - .:/app  # Mount entire app directory for hot-reload
+    env_file:
+      - .env
+    command: ["python", "app.py"]  # Run Flask directly with auto-reload
