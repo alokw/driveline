@@ -181,6 +181,28 @@
     border-color: #1d4ed8;
 }
 
+.button-stagetimer-enable-blackout {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #374151;
+}
+
+.button-stagetimer-enable-blackout:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #4b5563;
+}
+
+.button-stagetimer-disable-blackout {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #1f2937;
+}
+
+.button-stagetimer-disable-blackout:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #374151;
+}
+
 .button-danger {
     background: linear-gradient(135deg, var(--color-error) 0%, #dc2626 100%);
     color: white;

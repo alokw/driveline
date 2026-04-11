@@ -51,8 +51,8 @@
             <h3>Set Show Schedule</h3>
             <div class="showtime-schedule-grid">
                 {{ components.schedule_row('10:30 Start', '10:30, 12:00, 13:30, 15:30, 17:00, 18:30, 20:00, 21:30') }}
-                {{ components.schedule_row('09:30 Start', '09:30, 11:00, 12:30, 14:00, 16:00, 17:30, 19:00, 20:30') }}
                 {{ components.schedule_row('10:00 Start', '10:00, 11:30, 13:00, 14:30, 16:30, 18:00, 19:30, 21:00') }}
+                {{ components.schedule_row('09:30 Start', '09:30, 11:00, 12:30, 14:00, 16:00, 17:30, 19:00, 20:30') }}
             </div>
         </div>
 
@@ -60,12 +60,10 @@
         <div class="control-group">
             <h3>D3 Cues</h3>
             <div class="d3-cues-grid">
-                {{ components.d3_cue(952, 'Text To be Determined but will be about this length.', 'Fire') }}
-                {{ components.d3_cue(953, 'Cue 953', 'Go') }}
-                {{ components.d3_cue(100, 'Cue 100', 'Trigger') }}
-                {{ components.d3_cue_clean(952, 'Cue 952', 'Clean') }}
-                {{ components.d3_cue(304, 'Cue 304') }}
-                {{ components.d3_cue(305, 'Cue 305') }}
+                {{ components.d3_cue_clean(201, 'Act One', 'Cue 201') }}
+                {{ components.d3_cue_clean(202, 'Act Two', 'Cue 202') }}
+                {{ components.d3_cue_clean(204, 'Act Four / Live Reveal', 'Cue 204') }}
+                {{ components.d3_cue_clean(205, 'Product Hold / Brand Specialist', 'Cue 205') }}
             </div>
         </div>
     </div>
@@ -73,20 +71,6 @@
     <!-- Right Column: StageTimer Controls -->
     <div class="dashboard-right-col">
 
-        <!-- StageTimer Controls -->
-        <div class="control-group">
-            <h3>StageTimer Controls</h3>
-            <div>
-                {{ components.stagetimer_action('start_timer', 'Start') }}
-                {{ components.stagetimer_action('stop_timer', 'Stop') }}
-                {{ components.stagetimer_action('reset_timer', 'Reset') }}
-            </div>
-            <div class="mt-sm">
-                {{ components.stagetimer_time(3, 30, '3:30') }}
-                {{ components.stagetimer_time(5, 0, '5:00') }}
-                {{ components.stagetimer_time(10, 0) }}
-            </div>
-        </div>
         
         <!-- Additional D3 Cues -->
         <div class="control-group">
@@ -99,6 +83,50 @@
                 {{ components.d3_cue_clean(803, 'Clean Theme', 'Cue 803') }}
             </div>
         </div>
+
+        <div class="control-group">
+            <h3>Overlays</h3>
+            <div class="d3-cues-grid">
+                {{ components.d3_cue(950, 'Clear Overlays', 'Cue 950') }}
+                {{ components.d3_cue(952, 'Next Show On', 'Cue 952') }}
+                {{ components.d3_cue(953, 'Drone Kedge Spikes', 'Cue 953') }}
+            </div>
+        </div>
+
+        <!-- StageTimer Controls -->
+        <div class="control-group">
+            <h3>StageTimer Controls</h3>
+            <div>
+                {{ components.stagetimer_action('start_timer', 'Start') }}
+                {{ components.stagetimer_action('stop_timer', 'Stop') }}
+                {{ components.stagetimer_action('reset_timer', 'Reset') }}
+                {{ components.stagetimer_action('enable_blackout', 'Blackout On') }}
+                {{ components.stagetimer_action('disable_blackout', 'Blackout Off') }}
+                {{ components.stagetimer_time(3, 30, '3:30') }}
+                {{ components.stagetimer_time(5, 0, '5:00') }}
+            </div>
+        </div>
+
+        <!-- Additional D3 Cues -->
+        <div class="control-group">
+            <h3>Tech Sequences</h3>
+            <div class="d3-cues-grid">
+                {{ components.d3_cue_clean(910, 'Grids w/o Timecode', 'Cue 910') }}
+                {{ components.d3_cue_clean(911, 'Grids w/ Timecode', 'Cue 911') }}
+                {{ components.d3_cue_clean(921, 'Black', 'Cue 921') }}
+                {{ components.d3_cue_clean(922, 'White', 'Cue 922') }}
+                {{ components.d3_cue_clean(930, '25% Grey', 'Cue 930') }}
+                {{ components.d3_cue_clean(923, '50% Grey', 'Cue 923') }}
+                {{ components.d3_cue_clean(931, '75% Grey', 'Cue 931') }}
+                {{ components.d3_cue_clean(924, 'Red', 'Cue 924') }}
+                {{ components.d3_cue_clean(925, 'Green', 'Cue 925') }}
+                {{ components.d3_cue_clean(926, 'Blue', 'Cue 926') }}
+                {{ components.d3_cue_clean(927, 'Cyan', 'Cue 927') }}
+                {{ components.d3_cue_clean(928, 'Magenta', 'Cue 928') }}
+                {{ components.d3_cue_clean(929, 'Yellow', 'Cue 929') }}
+            </div>
+        </div>
+
 
     </div>
 </div>
