@@ -18,7 +18,8 @@ from helpers import (
     osc_db, osc_listener, osc_sender,
     get_osc_value, get_all_osc_values,
     d3_cue_go, d3_cue_go_clean,
-    eventmaster_preset_prgm_by_name, millumin_launch_column_by_name, stagetimer_control,
+    eventmaster_preset_prgm_by_name, eventmaster_preset_prvw_by_name, eventmaster_alltrans,
+    millumin_launch_column_by_name, stagetimer_control,
     seq_showtime_set, seq_showtime_check, show_close_check,
     d3_section_hint_check, d3_seq_time_check,
     log_action
@@ -192,6 +193,28 @@ def handle_eventmaster_preset(data):
         success = eventmaster_preset_prgm_by_name(preset)
         log_action(ip, 'eventmaster_preset', preset)
         emit('action_result', {'action': 'eventmaster_preset', 'success': success, 'preset': preset})
+
+
+@socketio.on('eventmaster_preset_preview')
+def handle_eventmaster_preset_preview(data):
+    """Handle EventMaster preview preset activation"""
+    preset = data.get('preset')
+    ip = request.remote_addr
+
+    if preset:
+        success = eventmaster_preset_prvw_by_name(preset)
+        log_action(ip, 'eventmaster_preset_preview', preset)
+        emit('action_result', {'action': 'eventmaster_preset_preview', 'success': success, 'preset': preset})
+
+
+@socketio.on('eventmaster_alltrans')
+def handle_eventmaster_alltrans(data):
+    """Handle EventMaster allTrans"""
+    ip = request.remote_addr
+
+    success = eventmaster_alltrans()
+    log_action(ip, 'eventmaster_alltrans', 'transition')
+    emit('action_result', {'action': 'eventmaster_alltrans', 'success': success})
 
 
 @socketio.on('millumin_column')

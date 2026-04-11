@@ -7,6 +7,8 @@ A professional web-based show control system for integrating and managing live s
 - **Real-Time Dashboard**: Web-based UI with live data updates via Socket.IO
 - **OSC Integration**: Bidirectional OSC/UDP communication with queue-based rate limiting
 - **Device Control**: Integrated control for d3, EventMaster, Millumin, and StageTimer
+- **Component System**: Jinja2 macros for reusable, clean dashboard components
+- **Advanced Crossfades**: 60Hz background crossfading for smooth audio/video transitions
 - **Showtime Management**: Automated showtime scheduling with d3 indirection generation
 - **Countdown Displays**: Live countdowns to show close, show moments, and sequence cues
 - **Data Logging**: Automatic Google Sheets logging of all control actions
@@ -178,7 +180,10 @@ GOOGLE_CREDENTIALS_JSON='{"type": "service_account", ...}'  # Service account JS
 
 #### d3 Media Server
 - **Standard Cue**: `d3_cue_go(cue_number)` - Immediate cue trigger
-- **Clean Cue**: `d3_cue_go_clean(cue_number)` - Crossfaded transition with audio/video fades
+- **Clean Cue**: `d3_cue_go_clean(cue_number)` - Advanced crossfaded transition
+  - 60Hz audio/video crossfades in background threads
+  - Automated sequence: audio out → video out → trigger → video in → audio in
+  - Smooth linear interpolation for professional transitions
 
 #### EventMaster
 - **Preset Activation**: Preview preset → 100ms delay → Transition
@@ -209,6 +214,80 @@ Indirection format:
 objects/videofile/9801_nextshow/nextshow_{HH}_{MM}_fg_nlca.mov
 ```
 
+### Component System
+
+Driveline uses Jinja2 macros for reusable UI components, making dashboard HTML cleaner and more maintainable.
+
+**Available Components:**
+```html
+<!-- D3 Cues -->
+{{ components.d3_cue(952, 'Description', 'Trigger') }}           # Custom button text
+{{ components.d3_cue_clean(952, 'Description', 'Clean') }}       # Clean cue
+
+<!-- EventMaster -->
+{{ components.eventmaster_preset('primary', 'Primary') }}        # Program preset
+{{ components.eventmaster_preview('secondary', 'Preview') }}      # Preview preset
+{{ components.eventmaster_transition('Take') }}                  # Transition
+
+<!-- Millumin -->
+{{ components.millumin_column('chicago', 'Chicago') }}
+
+<!-- Schedule Buttons -->
+{{ components.schedule_row('10:30 Start', '10:30, 12:00, 13:30') }}
+
+<!-- StageTimer -->
+{{ components.stagetimer_action('start_timer', 'Start') }}
+{{ components.stagetimer_time(3, 30, '3:30') }}                  # Custom label
+{{ components.stagetimer_time(5, 0) }}                           # Auto-generates "05:00"
+```
+
+**Benefits:**
+- **Cleaner Code**: 4-line HTML blocks become 1-line macro calls
+- **Consistency**: All buttons styled uniformly
+- **Maintainability**: Update macro once, changes apply everywhere
+- **Flexibility**: Optional parameters for customization (button text, labels, etc.)
+
+**Before (4 lines):**
+```html
+<div class="d3-cue-row">
+    <button class="button button-secondary button-d3-cue" data-d3-cue="952">Trigger</button>
+    <span class="d3-cue-label">Cue 952</span>
+</div>
+```
+
+**After (1 line):**
+```html
+{{ components.d3_cue(952, 'Cue 952') }}
+```
+
+### Advanced Crossfade System
+
+Driveline includes a sophisticated crossfade system for smooth audio/video transitions:
+
+**Features:**
+- **60Hz Update Rate**: Sends OSC values every ~16.666ms for buttery-smooth transitions
+- **Background Threading**: Multiple crossfades can run simultaneously without blocking
+- **Linear Interpolation**: Mathematically smooth transitions from start to end values
+- **d3 Integration**: Sends single float values to `/d3/layervolume` and `/d3/showcontrol/brightness`
+
+**Clean Cue Sequence:**
+```
+1. Audio fade out:  /d3/layervolume  1.0 → 0.0 over 3s (background)
+2. Wait 1s
+3. Video fade out: /d3/showcontrol/brightness 1.0 → 0.0 over 2s (background)
+4. Wait 1s
+5. Trigger cue
+6. Video fade in:  /d3/showcontrol/brightness 0.0 → 1.0 over 2s (background)
+7. Audio fade in:   /d3/layervolume  0.0 → 1.0 over 3s (background)
+   (steps 6 & 7 run simultaneously)
+```
+
+**Usage:**
+```python
+# In helpers/devices.py
+crossfade(address, port, "/d3/layervolume", 1.0, 0.0, 3.0)  # Start, end, duration
+```
+
 ### OSC Data Monitoring
 
 Monitored OSC paths:
@@ -232,18 +311,21 @@ Monitored OSC paths:
 - **Flask**: Web framework
 - **Flask-SocketIO**: WebSocket support with polling fallback for real-time updates
 - **python-osc**: OSC protocol implementation
-- **Threading**: Background OSC listener and sender with queue-based rate limiting
+- **Threading**: Background OSC listener, sender, and crossfade system
+- **Jinja2 Macros**: Component system for reusable UI elements
 - **Python logging**: Structured logging with configurable verbosity
 
 ### Frontend
 - **Vanilla JavaScript**: No frameworks, minimal dependencies
 - **Socket.IO Client**: Real-time data updates
+- **Jinja2 Components**: Macro-based reusable UI elements
 - **CSS Variables**: Easy theming and maintenance
 - **Mobile-First**: Responsive design for all screen sizes
 
 ### OSC System
 - **Listener**: Multi-port async OSC server supporting bundles
 - **Sender**: Queue-based rate-limited OSC sender (configurable interval)
+- **Crossfade Engine**: 60Hz background thread system for smooth value transitions
 - **Database**: Thread-safe in-memory storage for all OSC values
 
 ## Docker Deployment

@@ -183,12 +183,11 @@ def show_close_check() -> str:
         parts = []
         if days > 0:
             parts.append(f"{days} day{'s' if days != 1 else ''}")
-        if hours > 0:
+        if days > 0 or hours > 0:
             parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
-        if minutes > 0:
+        if days > 0 or hours > 0 or minutes > 0:
             parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
-        if seconds > 0 or not parts:
-            parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
+        parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
 
         return "Show closes in " + ", ".join(parts)
 

@@ -128,12 +128,57 @@
 .button-secondary {
     background-color: var(--color-bg-tertiary);
     color: var(--color-text-primary);
-    border-color: var(--color-border);
+    border-color: #2d3748;
 }
 
 .button-secondary:hover {
     background-color: var(--color-bg-elevated);
-    border-color: var(--color-border-light);
+    border-color: #4a5568;
+}
+
+/* StageTimer button variants with colored borders */
+.button-stagetimer-start {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #14532d;
+}
+
+.button-stagetimer-start:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #166534;
+}
+
+.button-stagetimer-stop {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #7f1d1d;
+}
+
+.button-stagetimer-stop:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #991b1b;
+}
+
+.button-stagetimer-reset {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #713f12;
+}
+
+.button-stagetimer-reset:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #854d0e;
+}
+
+.button-stagetimer-update {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #1e3a8a;
+}
+
+.button-stagetimer-update:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #1d4ed8;
 }
 
 .button-danger {
@@ -209,7 +254,7 @@
 
 .schedule-label {
     font-family: var(--font-family-mono);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
     color: var(--color-text-secondary);
     min-width: 100px;
@@ -225,18 +270,20 @@
 /* Control Group */
 .control-group {
     background: linear-gradient(145deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
-    border: 1px solid var(--color-border);
+    border: 1px solid #4a5568;
     border-radius: var(--border-radius-lg);
     padding: 0.75rem;
     box-shadow: var(--shadow-md);
 }
 
 .control-group h3 {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin-bottom: 0.5rem;
-    letter-spacing: var(--letter-spacing-tight);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    line-height: 1;
+  text-transform: uppercase;
 }
 
 .control-group .button {

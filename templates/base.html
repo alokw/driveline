@@ -1,3 +1,4 @@
+{% import 'components.html' as components %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +19,7 @@
     <header class="site-header">
         <div class="header-container">
             <div class="site-branding">
-                <h1 class="site-title">Driveline</h1>
+                <h1 class="site-title"><span style="font-weight: var(--font-weight-bold);">DRIVE</span><span style="font-weight: var(--font-weight-normal); font-style: italic;">LINE</span></h1>
             </div>
 
             <nav class="site-nav">
@@ -43,12 +44,13 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Footer 
     <footer class="site-footer">
         <div class="footer-container">
             <p class="footer-text">&copy; 2026 Driveline Show Control System</p>
         </div>
     </footer>
+    -->
 
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>

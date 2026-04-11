@@ -1,0 +1,65 @@
+{#
+  Driveline Component Macros
+  Reusable UI components for device controls
+#}
+
+{% macro d3_cue(cue_number, label, button_text='Trigger', clean=false) %}
+<div class="d3-cue-row">
+    <button class="button button-secondary button-d3-cue" data-d3-cue="{{ cue_number }}" {% if clean %}data-d3-clean="true"{% endif %}>
+        {{ button_text }}
+    </button>
+    <span class="d3-cue-label">{{ label }}</span>
+</div>
+{% endmacro %}
+
+{% macro d3_cue_clean(cue_number, label, button_text='Clean Transition') %}
+{{ d3_cue(cue_number, label, button_text, clean=true) }}
+{% endmacro %}
+
+{% macro eventmaster_preset(preset, label) %}
+<button class="button button-secondary" data-eventmaster-preset="{{ preset }}">
+    {{ label }}
+</button>
+{% endmacro %}
+
+{% macro eventmaster_preview(preset, label) %}
+<button class="button button-secondary" data-eventmaster-preview="{{ preset }}">
+    {{ label }}
+</button>
+{% endmacro %}
+
+{% macro eventmaster_transition(label) %}
+<button class="button button-secondary" data-eventmaster-transition="true">
+    {{ label }}
+</button>
+{% endmacro %}
+
+{% macro millumin_column(column, label) %}
+<button class="button button-secondary" data-millumin-column="{{ column }}">
+    {{ label }}
+</button>
+{% endmacro %}
+
+{% macro stagetimer_action(action, label) %}
+{# Extract action type for CSS class #}
+{% set action_type = action.replace('_timer', '').replace('_', '-') %}
+<button class="button button-stagetimer-{{ action_type }}" data-stagetimer-action="{{ action }}">
+    {{ label }}
+</button>
+{% endmacro %}
+
+{% macro stagetimer_time(minutes, seconds, label=None) %}
+{% set button_label = label or '{:02d}:{:02d}'.format(minutes, seconds) %}
+<button class="button button-stagetimer-update" data-stagetimer-action="update_timer" data-stagetimer-minutes="{{ minutes }}" data-stagetimer-seconds="{{ seconds }}">
+    {{ button_label }}
+</button>
+{% endmacro %}
+
+{% macro schedule_row(button_label, times) %}
+<div class="schedule-row">
+    <button class="button button-secondary schedule-button" data-showtimes="{{ times }}">
+        {{ button_label }}
+    </button>
+    <span class="schedule-label">{{ times }}</span>
+</div>
+{% endmacro %}

@@ -253,6 +253,20 @@ function sendEventMasterPreset(preset) {
 }
 
 /**
+ * Send EventMaster preview preset
+ */
+function sendEventMasterPreview(preset) {
+    socket.emit('eventmaster_preset_preview', { preset: preset });
+}
+
+/**
+ * Send EventMaster transition
+ */
+function sendEventMasterTransition() {
+    socket.emit('eventmaster_alltrans');
+}
+
+/**
  * Send Millumin column launch
  */
 function launchMilluminColumn(column) {

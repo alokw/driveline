@@ -49,6 +49,21 @@ function initButtonHandlers() {
         });
     });
 
+    // EventMaster preview preset buttons
+    document.querySelectorAll('[data-eventmaster-preview]').forEach(button => {
+        button.addEventListener('click', () => {
+            const preset = button.dataset.eventmasterPreview;
+            sendEventMasterPreview(preset);
+        });
+    });
+
+    // EventMaster transition buttons
+    document.querySelectorAll('[data-eventmaster-transition]').forEach(button => {
+        button.addEventListener('click', () => {
+            sendEventMasterTransition();
+        });
+    });
+
     // Millumin column buttons
     document.querySelectorAll('[data-millumin-column]').forEach(button => {
         button.addEventListener('click', () => {

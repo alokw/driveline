@@ -6,6 +6,7 @@ Includes d3, EventMaster, Millumin, StageTimer, and utility functions
 import os
 import time
 import logging
+import threading
 from typing import Optional
 import requests
 
@@ -55,21 +56,51 @@ def post_request(url: str, data: dict) -> Optional[requests.Response]:
         return None
 
 
-def crossfade(start_value: float, end_value: float, seconds: float) -> float:
+def crossfade(address: str, port: int, path: str, start_value: float, end_value: float, duration: float) -> threading.Thread:
     """
-    Calculate linear crossfade value
+    Execute a linear crossfade from start_value to end_value over duration seconds
+    Runs in background thread and sends OSC updates at 60Hz
 
     Args:
-        start_value: Starting value
-        end_value: Ending value
-        seconds: Duration of crossfade
+        address: IP address to send to
+        port: UDP port
+        path: OSC address path (e.g., "/d3/layervolume")
+        start_value: Starting value (float, typically 0.0 to 1.0)
+        end_value: Ending value (float, typically 0.0 to 1.0)
+        duration: Duration in seconds
 
     Returns:
-        Current crossfade value (not implemented - returns interpolated value)
+        Thread object running the crossfade
     """
-    # This is a placeholder - actual crossfade animation would be handled
-    # by the caller in a loop or by the device itself
-    return end_value
+    def _crossfade_loop():
+        start_time = time.time()
+        update_interval = 1.0 / 60.0  # 60Hz = ~16.666ms
+
+        while True:
+            elapsed = time.time() - start_time
+
+            if elapsed >= duration:
+                # Send final value and exit
+                osc_send(address, port, path, end_value)
+                logger.debug(f"[Crossfade] Complete: {path} = {end_value}")
+                break
+
+            # Calculate linear interpolated value
+            progress = elapsed / duration
+            current_value = start_value + (end_value - start_value) * progress
+
+            # Send current value
+            osc_send(address, port, path, current_value)
+            logger.debug(f"[Crossfade] {path} = {current_value:.3f} ({progress*100:.1f}%)")
+
+            # Sleep until next update
+            time.sleep(update_interval)
+
+    # Start crossfade in background thread
+    thread = threading.Thread(target=_crossfade_loop, daemon=True)
+    thread.start()
+
+    return thread
 
 
 # =============================================================================
@@ -112,39 +143,39 @@ def d3_cue_go_clean(cue: int) -> bool:
         address = os.getenv('D3_OSC_OUT_ADDRESS', '10.10.10.255')
         port = int(os.getenv('D3_OSC_OUT_PORT', 7500))
 
-        print(f"[d3] Starting clean cue transition to cue {cue}")
+        logger.info(f"[d3] Starting clean cue transition to cue {cue}")
 
-        # Audio fade out (3 seconds)
-        print("[d3] Fading out audio (3s)")
-        osc_send(address, port, "/d3/layervolume", [1.0, 0.0, 3.0])
-
-        # Wait 1 second
-        time.sleep(1)
-
-        # Video fade out (2 seconds)
-        print("[d3] Fading out video (2s)")
-        osc_send(address, port, "/d3/showcontrol/brightness", [1.0, 0.0, 2.0])
+        # Audio fade out (3 seconds) - start in background
+        logger.info("[d3] Fading out audio (3s)")
+        crossfade(address, port, "/d3/layervolume", 1.0, 0.0, 3.0)
 
         # Wait 1 second
         time.sleep(1)
+
+        # Video fade out (2 seconds) - start in background
+        logger.info("[d3] Fading out video (2s)")
+        crossfade(address, port, "/d3/showcontrol/brightness", 1.0, 0.0, 2.0)
+
+        # Wait 2 second
+        time.sleep(2.25)
 
         # Trigger cue
-        print(f"[d3] Triggering cue {cue}")
+        logger.info(f"[d3] Triggering cue {cue}")
         osc_send(address, port, "/d3/showcontrol/cue", cue)
 
-        # Video fade in (2 seconds) - immediate
-        print("[d3] Fading in video (2s)")
-        osc_send(address, port, "/d3/showcontrol/brightness", [0.0, 1.0, 2.0])
+        # Video fade in (2 seconds) - start immediately in background
+        logger.info("[d3] Fading in video (2s)")
+        crossfade(address, port, "/d3/showcontrol/brightness", 0.0, 1.0, 2.0)
 
-        # Audio fade in (3 seconds) - immediate
-        print("[d3] Fading in audio (3s)")
-        osc_send(address, port, "/d3/layervolume", [0.0, 1.0, 3.0])
+        # Audio fade in (3 seconds) - start immediately in background
+        logger.info("[d3] Fading in audio (3s)")
+        crossfade(address, port, "/d3/layervolume", 0.0, 1.0, 3.0)
 
-        print(f"[d3] Clean cue transition complete")
+        logger.info(f"[d3] Clean cue transition complete")
         return True
 
     except Exception as e:
-        print(f"[d3] Error in clean cue transition: {e}")
+        logger.error(f"[d3] Error in clean cue transition: {e}")
         return False
 
 
