@@ -5,10 +5,13 @@ Includes d3, EventMaster, Millumin, StageTimer, and utility functions
 
 import os
 import time
+import logging
 from typing import Optional
 import requests
 
 from .osc import osc_send
+
+logger = logging.getLogger(__name__)
 
 
 def get_request(url: str) -> Optional[requests.Response]:
@@ -88,10 +91,9 @@ def d3_cue_go(cue: int) -> bool:
         port = int(os.getenv('D3_OSC_OUT_PORT', 7500))
         path = "/d3/showcontrol/cue"
 
-        print(f"[d3] Triggering cue {cue}")
         return osc_send(address, port, path, cue)
     except Exception as e:
-        print(f"[d3] Error triggering cue: {e}")
+        logger.error(f"Error triggering cue: {e}")
         return False
 
 

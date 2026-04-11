@@ -1,7 +1,7 @@
 # Flask and WebSocket support
 Flask==3.0.0
 Flask-SocketIO==5.3.6
-python-socketio==5.10.0
+python-socketio
 
 # ASGI server for Flask-SocketIO
 eventlet==0.33.3

@@ -4,7 +4,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('[Dashboard] Initialized');
+    console.log('[Dashboard] DOM Content Loaded - Initializing');
 
     // Initialize all button handlers
     initButtonHandlers();
@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize auto-refresh for debug page
     initDebugRefresh();
+
+    console.log('[Dashboard] Initialization complete');
 });
 
 /**
@@ -21,12 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function initButtonHandlers() {
     // d3 cue buttons
-    document.querySelectorAll('[data-d3-cue]').forEach(button => {
+    const d3Buttons = document.querySelectorAll('[data-d3-cue]');
+    console.log(`[Dashboard] Found ${d3Buttons.length} D3 cue buttons`);
+
+    d3Buttons.forEach(button => {
         button.addEventListener('click', () => {
             const cue = parseInt(button.dataset.d3Cue);
             const clean = button.dataset.d3Clean === 'true';
 
-            button.classList.add('loading');
+            console.log('[Dashboard] D3 cue button clicked:', cue, 'clean:', clean);
 
             if (clean) {
                 sendD3CueClean(cue);
@@ -40,7 +45,6 @@ function initButtonHandlers() {
     document.querySelectorAll('[data-eventmaster-preset]').forEach(button => {
         button.addEventListener('click', () => {
             const preset = button.dataset.eventmasterPreset;
-            button.classList.add('loading');
             sendEventMasterPreset(preset);
         });
     });
@@ -49,7 +53,6 @@ function initButtonHandlers() {
     document.querySelectorAll('[data-millumin-column]').forEach(button => {
         button.addEventListener('click', () => {
             const column = button.dataset.milluminColumn;
-            button.classList.add('loading');
             launchMilluminColumn(column);
         });
     });
@@ -65,7 +68,6 @@ function initButtonHandlers() {
                 ? parseInt(button.dataset.stagetimerSeconds)
                 : null;
 
-            button.classList.add('loading');
             sendStageTimerControl(action, minutes, seconds);
         });
     });
@@ -74,7 +76,6 @@ function initButtonHandlers() {
     document.querySelectorAll('[data-showtimes]').forEach(button => {
         button.addEventListener('click', () => {
             const times = button.dataset.showtimes;
-            button.classList.add('loading');
             setShowtimes(times);
         });
     });

@@ -3,34 +3,74 @@
  * Handles real-time communication with Flask backend
  */
 
+console.log('[Socket.IO] ===== INITIALIZING =====');
+console.log('[Socket.IO] io object available:', typeof io !== 'undefined');
+console.log('[Socket.IO] Current page URL:', window.location.href);
+
 // Initialize Socket.IO connection
-const socket = io({
+const socket = io('/', {
     transports: ['websocket', 'polling'],
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000
 });
 
+console.log('[Socket.IO] Socket object created:', socket);
+console.log('[Socket.IO] Socket ID before connect:', socket.id);
+
 // Connection status
 socket.on('connect', () => {
-    console.log('[Socket.IO] Connected to server');
+    console.log('[Socket.IO] ========== CONNECTED ==========');
+    console.log('[Socket.IO] Connected to server - Socket ID:', socket.id);
+    console.log('[Socket.IO] Transport:', socket.io.engine.transport.name);
+    console.log('[Socket.IO] Connected status:', socket.connected);
     updateConnectionStatus(true);
     requestInitialData();
 });
 
 socket.on('disconnect', () => {
+    console.log('[Socket.IO] ========== DISCONNECTED ==========');
     console.log('[Socket.IO] Disconnected from server');
     updateConnectionStatus(false);
 });
 
 socket.on('connect_error', (error) => {
+    console.error('[Socket.IO] ========== CONNECTION ERROR ==========');
     console.error('[Socket.IO] Connection error:', error);
+    console.error('[Socket.IO] Error details:', error.description, error.context, error.type);
     updateConnectionStatus(false);
 });
 
 // Server confirmation
 socket.on('connected', (data) => {
+    console.log('[Socket.IO] ========== SERVER MESSAGE ==========');
     console.log('[Socket.IO] Server message:', data.data);
+});
+
+// OSC value updates
+socket.on('osc_update', (data) => {
+    console.log('[Socket.IO] OSC update:', data.path, '=', data.value);
+    updateOSCValue(data.path, data.value);
+});
+
+// Showtime updates
+socket.on('showtime_update', (data) => {
+    console.log('[Socket.IO] Showtime update:', data);
+    updateShowtimeDisplays(data);
+});
+
+// All OSC values (initial load)
+socket.on('all_osc_values', (data) => {
+    console.log('[Socket.IO] Received all OSC values:', Object.keys(data).length, 'paths');
+    Object.entries(data).forEach(([path, value]) => {
+        updateOSCValue(path, value);
+    });
+});
+
+// Action results
+socket.on('action_result', (data) => {
+    console.log('[Socket.IO] Action result:', data);
+    showActionResult(data);
 });
 
 // OSC value updates
@@ -187,14 +227,22 @@ function getOSCValue(path) {
  * Send d3 cue trigger
  */
 function sendD3Cue(cue) {
+    console.log('[Socket.IO] Sending d3_cue_go:', cue);
+    console.log('[Socket.IO] Connected:', socket.connected);
+    console.log('[Socket.IO] Socket ID:', socket.id);
     socket.emit('d3_cue_go', { cue: cue });
+    console.log('[Socket.IO] Event emitted successfully');
 }
 
 /**
  * Send d3 clean cue trigger
  */
 function sendD3CueClean(cue) {
+    console.log('[Socket.IO] Sending d3_cue_go_clean:', cue);
+    console.log('[Socket.IO] Connected:', socket.connected);
+    console.log('[Socket.IO] Socket ID:', socket.id);
     socket.emit('d3_cue_go_clean', { cue: cue });
+    console.log('[Socket.IO] Event emitted successfully');
 }
 
 /**

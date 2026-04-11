@@ -129,8 +129,7 @@ class OSCSender:
                 'value': value,
                 'timestamp': datetime.now()
             }, block=False)
-            # Reduce verbosity - only log when queue is full
-            # print(f"[OSC Sender] Queued: {path} = {value} -> {address}:{port}")
+            print(f"[OSC] Queued: {path} = {value} -> {address}:{port}")
             return True
         except queue.Full:
             print(f"[OSC Sender] Queue full, message dropped: {path}")
@@ -186,8 +185,8 @@ class OSCSender:
             else:
                 client.send_message(msg['path'], value)
 
-            # Only log important messages, not every OSC send
-            # print(f"[OSC Sender] Sent: {msg['path']} = {value} -> {msg['address']}:{msg['port']}")
+            # Log when sending
+            print(f"[OSC] Sent: {msg['path']} = {value} -> {msg['address']}:{msg['port']}")
 
         except Exception as e:
             print(f"[OSC Sender] Error sending message: {e}")
@@ -222,24 +221,30 @@ class OSCListener:
             True if server started successfully, False otherwise
         """
         try:
+            print(f"[OSC Listener] Attempting to start listener on port {port}...")
+
             # Create dispatcher
             dispatcher = Dispatcher()
             dispatcher.set_default_handler(self._handle_osc_message)
 
             # Create OSC server
             server = BlockingOSCUDPServer(("0.0.0.0", port), dispatcher)
+            print(f"[OSC Listener] Created OSC server on port {port}")
 
             # Start in background thread
             thread = threading.Thread(target=self._run_server, args=(server, port), daemon=True)
             thread.start()
+            print(f"[OSC Listener] Started background thread for port {port}")
 
             self._servers[port] = server
             self._threads[port] = thread
-            print(f"[OSC Listener] Started listening on port {port}")
+            print(f"[OSC Listener] Successfully listening on port {port}")
             return True
 
         except Exception as e:
             print(f"[OSC Listener] Error starting server on port {port}: {e}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def _run_server(self, server: BlockingOSCUDPServer, port: int) -> None:

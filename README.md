@@ -18,9 +18,17 @@ A professional web-based show control system for integrating and managing live s
 
 ### Prerequisites
 
+**For macOS:**
+- Docker Desktop (recommended for development)
+- Google Sheets API credentials (for logging)
+- Network access to show devices (d3, EventMaster, etc.)
+
+**For Linux/Windows:**
 - Docker and Docker Compose
 - Google Sheets API credentials (for logging)
 - Network access to show devices (d3, EventMaster, etc.)
+
+See [macOS Development](#macos-development) for important networking details.
 
 ### Installation
 
@@ -93,8 +101,10 @@ SEQ_TIME_PRESENTER_START=00:10:31:06
 
 # OSC Configuration
 D3_OSC_IN_PORT=7400                                # d3 incoming port
-D3_OSC_OUT_ADDRESS=10.10.10.255                    # d3 outgoing address
+D3_OSC_OUT_ADDRESS=10.10.10.101                    # d3 outgoing address (use specific device IP)
 AUTOMATION_OSC_IN_PORT=7587                        # Automation incoming port
+AUTOMATION_OSC_OUT_ADDRESS=10.10.10.102            # Automation outgoing address (use specific device IP)
+AUTOMATION_OSC_OUT_PORT=7411                       # Automation outgoing port
 
 # HTTP Integrations
 STAGETIMER_OUT_URL=http://10.19.53.21:3000/api/v1/  # StageTimer API
@@ -220,9 +230,10 @@ Monitored OSC paths:
 
 ### Backend
 - **Flask**: Web framework
-- **Flask-SocketIO**: WebSocket support for real-time updates
+- **Flask-SocketIO**: WebSocket support with polling fallback for real-time updates
 - **python-osc**: OSC protocol implementation
 - **Threading**: Background OSC listener and sender with queue-based rate limiting
+- **Python logging**: Structured logging with configurable verbosity
 
 ### Frontend
 - **Vanilla JavaScript**: No frameworks, minimal dependencies
@@ -260,19 +271,28 @@ docker-compose -f docker-compose.prod.yml down
 ### Development Deployment (Default with Hot-Reload)
 See the Development section below for details.
 
+**macOS Users:** See [macOS Development with Colima](#macos-development-with-colima) for important networking requirements.
+
 ### Network Configuration
 
-**Important**: OSC uses UDP broadcast/multicast. The Docker container uses `network_mode: host` to ensure proper OSC communication. This means the container shares the host's network stack.
+**Development (macOS with Docker Desktop):**
+- Uses **port mappings** for network access
+- Web GUI accessible from other devices: `http://[HOST_IP]:5000`
+- OSC broadcast messages are received properly
+- Outgoing OSC should use specific device IPs (not `.255`)
+
+**Production (Linux servers):**
+- Uses `network_mode: host` for multi-NIC support
+- Container shares host's network stack
+- Web GUI accessible on all network interfaces
+- Full OSC broadcast send/receive capability
 
 **Accessing from Other Devices:**
-- With `network_mode: host`, the web GUI is accessible from other devices on your network
-- Use the host machine's IP address: `http://[HOST_IP]:5000`
-- Example: If your host IP is `192.168.1.100`, access via `http://192.168.1.100:5000`
-
-**Finding Your Host IP:**
-- macOS/Linux: `ifconfig` or `ip addr show`
-- Windows: `ipconfig`
-- Look for your network adapter's IPv4 address
+1. Find your host IP address:
+   - macOS/Linux: `ifconfig | grep "inet " | grep -v 127.0.0.1`
+   - Windows: `ipconfig | findstr IPv4`
+2. Access via: `http://[HOST_IP]:5000`
+   - Example: `http://192.168.1.100:5000`
 
 **Firewall Configuration:**
 - Ensure port 5000 is not blocked by your firewall
@@ -398,7 +418,20 @@ driveline/
 2. Verify device IP addresses and ports in `.env`
 3. Check network connectivity to OSC devices
 4. Verify devices are sending to correct IP (this machine's IP)
-5. Check Docker network configuration - use `network_mode: host`
+5. Check Docker port mappings are configured correctly in `docker-compose.yml`
+6. Verify container is running: `docker ps | grep driveline`
+
+### OSC Not Sending to Devices
+
+**Problem**: Commands not reaching d3 or automation devices
+
+**Solutions**:
+1. **Use specific device IPs** instead of broadcast addresses in `.env`
+   - Change `D3_OSC_OUT_ADDRESS=10.10.10.255` to `D3_OSC_OUT_ADDRESS=10.10.10.101` (actual device IP)
+2. Verify device IPs are reachable: `docker exec driveline-dev ping -c 2 10.10.10.101`
+3. Check logs for OSC queue/send messages: `docker-compose logs driveline | grep OSC`
+4. Verify outgoing port configuration in `.env`
+5. Test with specific device IP instead of broadcast
 
 ### Google Sheets Logging Not Working
 
@@ -467,10 +500,10 @@ driveline/
    - Verify `FLASK_HOST=0.0.0.0` in `.env` (not `127.0.0.1`)
    - Check logs for: `Running on http://0.0.0.0:5000`
 
-2. **Verify host network mode is active**:
+2. **Verify port mapping is active**:
    ```bash
    docker ps | grep driveline
-   # Should show "Host" in Networks column
+   # Should show port mapping like "0.0.0.0:5000->5000/tcp"
    ```
 
 3. **Find your host IP address**:
@@ -510,6 +543,76 @@ driveline/
 **Example access URLs:**
 - From host: `http://localhost:5000`
 - From another device: `http://192.168.1.100:5000` (replace with your host IP)
+
+## macOS Development
+
+### Recommended Setup: Docker Desktop
+
+For macOS development, **Docker Desktop with port mappings** is the recommended approach. This provides:
+
+- ✅ **Full network access** - OSC broadcast messages (`.255`) are received properly
+- ✅ **Port forwarding** - All required ports are mapped to the host
+- ✅ **Easy setup** - No additional tools required
+- ✅ **Web GUI access** - Dashboard accessible from other devices on the network
+
+### Port Mapping Configuration
+
+The default `docker-compose.yml` uses port mappings for development:
+
+```yaml
+services:
+  driveline:
+    ports:
+      - "${WEB_PORT:-5000}:${WEB_PORT:-5000}"           # Web GUI
+      - "${D3_OSC_IN_PORT:-7400}:${D3_OSC_IN_PORT:-7400}/udp"      # d3 OSC in
+      - "${AUTOMATION_OSC_IN_PORT:-7587}:${AUTOMATION_OSC_IN_PORT:-7587}/udp"  # Automation OSC in
+```
+
+This configuration allows:
+- Web GUI access from other devices: `http://[YOUR_MAC_IP]:5000`
+- OSC broadcast message reception on ports 7400 and 7587
+- Outgoing OSC messages to specific device IPs
+
+### OSC Network Configuration
+
+**Important**: For reliable OSC communication on macOS:
+
+1. **Use specific device IPs** instead of broadcast addresses for outgoing OSC
+   ```bash
+   D3_OSC_OUT_ADDRESS=10.10.10.101  # Specific device, not .255
+   AUTOMATION_OSC_OUT_ADDRESS=10.10.10.102  # Specific device, not .255
+   ```
+
+2. **Broadcast reception works** with port mappings - incoming OSC on `.255` is received properly
+
+3. **For production Linux servers** with multiple network interfaces, use `docker-compose.prod.yml` which uses `network_mode: host` for proper multi-NIC access
+
+### Running Driveline on macOS
+
+```bash
+# Start development mode (with hot-reload)
+docker-compose up
+
+# Access from your Mac
+open http://localhost:5000
+
+# Access from other devices
+# Find your Mac's IP address
+ifconfig | grep "inet " | grep -v 127.0.0.1
+# Then access from other devices: http://[YOUR_MAC_IP]:5000
+```
+
+### Troubleshooting macOS OSC Issues
+
+**OSC not reaching devices:**
+1. Verify specific device IPs are set in `.env` (not broadcast addresses)
+2. Test connectivity: `docker exec driveline-dev ping -c 2 10.10.10.101`
+3. Check firewall settings
+
+**Not receiving OSC broadcasts:**
+1. Verify port mappings are active in `docker-compose.yml`
+2. Check devices are sending to correct IP (your Mac's IP)
+3. Verify UDP ports are not blocked by firewall
 
 ## API Reference
 
@@ -567,10 +670,6 @@ GET /api/osc/<path>
 4. **Google Sheets**: Service account credentials should be kept secure
 5. **Docker**: Container runs as root - consider adding non-root user for production
 
-## License
-
-[Your License Here]
-
 ## Support
 
 For issues and questions:
@@ -578,7 +677,3 @@ For issues and questions:
 - Review debug page for real-time system status
 - Check Docker logs: `docker-compose logs -f driveline`
 - Verify network connectivity to all devices
-
-## Credits
-
-Driveline Show Control System - Built for professional live show environments.

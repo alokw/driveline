@@ -4,10 +4,15 @@ Flask application with Socket.IO for real-time show control
 """
 
 import os
+import logging
 from datetime import datetime
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from flask import jsonify
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 from helpers import (
     osc_db, osc_listener, osc_sender,
@@ -23,8 +28,17 @@ from helpers import (
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'driveline-secret-key')
 
-# Initialize Socket.IO
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
+# Initialize Socket.IO - use threading mode for compatibility
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode='threading',
+    logger=False,
+    engineio_logger=False,
+    ping_timeout=60,
+    ping_interval=25,
+    manage_session=False
+)
 
 
 # =============================================================================
@@ -38,9 +52,12 @@ def utility_functions():
     def osc_value(path, default=None):
         """Get OSC value for display"""
         try:
+            # Check if OSC database is initialized
+            if osc_db is None:
+                return default
             return get_osc_value(path, default)
         except Exception as e:
-            print(f"[Template Context] Error getting OSC value for {path}: {e}")
+            # Silently return default on error to avoid startup issues
             return default
 
     return dict(
@@ -100,8 +117,7 @@ def api_osc_path(path):
 @socketio.on('connect')
 def handle_connect():
     """Handle client connection"""
-    print(f"[Socket.IO] Client connected: {request.sid}")
-    emit('connected', {'data': 'Connected to Driveline'})
+    logger.info(f"Client connected: {request.sid}")
 
 
 @socketio.on('disconnect')
@@ -261,7 +277,10 @@ def start_osc_listeners():
     d3_port = int(os.getenv('D3_OSC_IN_PORT', 7400))
     automation_port = int(os.getenv('AUTOMATION_OSC_IN_PORT', 7587))
 
+    print(f"[OSC] Starting D3 listener on port {d3_port}")
     osc_listener.start(d3_port)
+
+    print(f"[OSC] Starting Automation listener on port {automation_port}")
     osc_listener.start(automation_port)
 
     # Register OSC update callback for important paths
@@ -282,6 +301,8 @@ def start_osc_listeners():
     for path in important_paths:
         osc_db.register_callback(path, osc_update_callback)
 
+    print(f"[OSC] Registered callbacks for {len(important_paths)} OSC paths")
+
 
 def start_background_tasks():
     """Start background tasks"""
@@ -293,9 +314,68 @@ def start_background_tasks():
 # =============================================================================
 
 if __name__ == '__main__':
+    # Echo all environment variables for troubleshooting
+    print("\n" + "="*60)
+    print("[Driveline] Environment Variables:")
+    print("="*60)
+
+    env_vars = {
+        'Show Configuration': [
+            'SHOW_CLOSE',
+            'SEQ_TIME_DRONE_DEPLOY',
+            'SEQ_TIME_ACT2_START',
+            'SEQ_TIME_PRESENTER_START',
+            'SEQ_TIME_PRESENTER_END',
+            'SEQ_TIME_RESET_START',
+            'SEQ_TIME_RESET_END',
+            'SEQ_TIME_TIMELINE_END',
+        ],
+        'OSC Configuration': [
+            'AUTOMATION_OSC_IN_PORT',
+            'AUTOMATION_OSC_OUT_ADDRESS',
+            'AUTOMATION_OSC_OUT_PORT',
+            'D3_OSC_IN_PORT',
+            'D3_OSC_OUT_ADDRESS',
+            'D3_OSC_OUT_PORT',
+            'MILLUMIN_OUT_ADDRESS',
+            'MILLUMIN_OUT_PORT',
+        ],
+        'HTTP Integrations': [
+            'STAGETIMER_OUT_URL',
+            'STAGETIMER_OUT_SUFFIX',
+            'EVENTMASTER_OUT_ADDRESS',
+        ],
+        'Google Sheets': [
+            'GOOGLE_SPREADSHEET_ID',
+            'GOOGLE_SPREADSHEET_CELLS',
+        ],
+        'Server': [
+            'FLASK_HOST',
+            'FLASK_PORT',
+            'FLASK_DEBUG',
+            'TZ',
+        ]
+    }
+
+    for section, vars in env_vars.items():
+        print(f"\n{section}:")
+        for var in vars:
+            value = os.getenv(var, '<not set>')
+            # Truncate long values for display
+            if len(str(value)) > 50:
+                value = str(value)[:47] + "..."
+            print(f"  {var}: {value}")
+
+    print("="*60 + "\n")
+
     # Start OSC system
+    print("[OSC] Starting OSC sender...")
     osc_sender.start()
+    print(f"[OSC] OSC sender started (queue interval: {osc_sender.send_interval}s)")
+
     start_osc_listeners()
+
+    print("[Background] Starting background tasks...")
     start_background_tasks()
 
     # Run Flask app
@@ -303,5 +383,5 @@ if __name__ == '__main__':
     port = int(os.getenv('FLASK_PORT', 5000))
     debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
 
-    print(f"[Driveline] Starting server on {host}:{port}")
+    print(f"[Driveline] Starting server on {host}:{port} (async_mode=threading)")
     socketio.run(app, host=host, port=port, debug=debug, allow_unsafe_werkzeug=True)

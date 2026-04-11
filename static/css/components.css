@@ -8,7 +8,7 @@
     background-color: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-md);
-    padding: var(--space-md);
+    padding: 0.75rem;
     box-shadow: var(--shadow-md);
     transition: all var(--transition-base);
 }
@@ -19,8 +19,8 @@
 }
 
 .card-header {
-    margin-bottom: var(--space-sm);
-    padding-bottom: var(--space-sm);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border-elevated);
 }
 
@@ -35,47 +35,49 @@
     color: var(--color-text-secondary);
 }
 
-/* Display Card */
+/* Display Card - Compact Table Style */
 .display-card {
-    background: linear-gradient(145deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+    background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-lg);
-    padding: var(--space-md);
+    border-radius: var(--border-radius-sm);
+    padding: 0.25rem 0.5rem;
     text-align: center;
-    box-shadow: var(--shadow-md);
-    transition: all var(--transition-base);
-}
-
-.display-card:hover {
-    border-color: var(--color-accent-subtle);
-    box-shadow: var(--shadow-lg);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 2.5rem;
 }
 
 .display-card h3 {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     font-weight: var(--font-weight-medium);
     color: var(--color-text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: var(--space-xs);
+    letter-spacing: 0.05em;
+    margin-bottom: 1px;
+    line-height: 1;
 }
 
 .display-value {
     font-family: var(--font-family-mono);
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
     color: var(--color-accent);
-    min-height: 2.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     letter-spacing: var(--letter-spacing-tight);
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    line-height: 1.2;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    flex: 1;
 }
 
 .display-value.multiline {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-sm);
     white-space: pre-line;
+    line-height: 1.3;
+    margin-bottom: 0;
 }
 
 /* Buttons */
@@ -84,7 +86,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-xs);
-    padding: var(--space-xs) var(--space-sm);
+    padding: 0.25rem 0.5rem;
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
@@ -94,6 +96,8 @@
     border: 1px solid transparent;
     text-decoration: none;
     font-family: var(--font-family-base);
+    min-width: 100px;
+    height: 2rem;
 }
 
 .button-primary {
@@ -110,6 +114,15 @@
 
 .button-primary:active {
     transform: translateY(0);
+}
+
+.button:focus {
+    outline: none;
+}
+
+.button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
 }
 
 .button-secondary {
@@ -153,12 +166,68 @@
     transform: none !important;
 }
 
+/* D3 Cues Grid */
+.d3-cues-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.d3-cue-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.d3-cue-label {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    min-width: 120px;
+    text-align: left;
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+.button-d3-cue {
+    flex: 0 0 auto;
+    width: 120px;
+}
+
+/* Showtime Schedule Grid */
+.showtime-schedule-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.schedule-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.schedule-label {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    min-width: 100px;
+    text-align: left;
+    letter-spacing: var(--letter-spacing-tight);
+}
+
+.schedule-button {
+    flex: 0 0 auto;
+    width: 120px;
+}
+
 /* Control Group */
 .control-group {
     background: linear-gradient(145deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-lg);
-    padding: var(--space-md);
+    padding: 0.75rem;
     box-shadow: var(--shadow-md);
 }
 
@@ -166,13 +235,14 @@
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-primary);
-    margin-bottom: var(--space-sm);
+    margin-bottom: 0.5rem;
     letter-spacing: var(--letter-spacing-tight);
 }
 
 .control-group .button {
-    margin-right: var(--space-xs);
-    margin-bottom: var(--space-xs);
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+    width: 120px;
 }
 
 /* Status Indicators */
@@ -254,6 +324,57 @@
     table-layout: fixed;  /* Prevents layout shift */
 }
 
+/* Info Table - 2x3 Dashboard Layout */
+.dashboard-table {
+    width: 100%;
+    background: #121212;
+    border: 1px solid #60a5fa;
+    border-radius: var(--border-radius-sm);
+    padding: 0.5rem;
+    overflow: hidden;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 0.375rem 0.5rem;
+    vertical-align: top;
+    background: #121212;
+    text-transform: uppercase;
+}
+
+.info-table td h3 {
+    font-size: 0.625rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.15rem;
+    line-height: 1;
+}
+
+.info-cell-large {
+    width: 80%;
+    text-align: center;
+}
+
+.info-cell-small {
+    width: 20%;
+    text-align: center;
+}
+
+.info-cell-large .display-value,
+.info-cell-small .display-value {
+    min-height: 1.25rem;
+    margin-bottom: 0;
+}
+
+.info-cell-extra-padding {
+    padding-bottom: 0.5rem;
+}
+
 .debug-table th,
 .debug-table td {
     padding: var(--space-xs);
@@ -333,7 +454,7 @@
 .text-warning { color: var(--color-warning); }
 .text-error { color: var(--color-error); }
 
-.mt-sm { margin-top: var(--space-sm); }
-.mt-md { margin-top: var(--space-md); }
-.mb-sm { margin-bottom: var(--space-sm); }
-.mb-md { margin-bottom: var(--space-md); }
+.mt-sm { margin-top: 0.5rem; }
+.mt-md { margin-top: 1rem; }
+.mb-sm { margin-bottom: 0.5rem; }
+.mb-md { margin-bottom: 1rem; }

@@ -103,23 +103,16 @@ def get_next_showtime() -> Optional[dt_time]:
     if not _showtimes:
         return None
 
-    now = datetime.now().time()
-    today = datetime.now().date()
+    now = datetime.now()
+    today = now.date()
+    current_time = now.time()
 
-    # Find first showtime that's after current time
+    # First, try to find a showtime today that hasn't passed yet
     for showtime in _showtimes:
-        showtime_dt = datetime.combine(today, showtime)
-
-        # If showtime has passed today, check if it's within 2 hours
-        # (in case we're between shows)
-        if showtime_dt < datetime.now():
-            # Move to tomorrow
-            showtime_dt += timedelta(days=1)
-
-        if showtime_dt > datetime.now():
+        if showtime > current_time:
             return showtime
 
-    # If all showtimes have passed, return first one tomorrow
+    # If all showtimes have passed today, return the first one tomorrow
     return _showtimes[0]
 
 
@@ -136,20 +129,18 @@ def seq_showtime_check() -> Optional[str]:
             return None
 
         showtime_str = next_show.strftime('%H:%M')
-        print(f"[Showtime] Next showtime: {showtime_str}")
 
         # Generate d3 indirection string
         # Format: objects/videofile/9801_nextshow/nextshow_{HH}_{MM}_fg_nlca.mov
         hour_str = next_show.strftime('%H')
         minute_str = next_show.strftime('%M')
-        indirection = f"objects/videofile/9801_nextshow/nextshow_{hour_str}_{minute_str}_fg_nlca.mov"
+        indirection = f"objects/videofile/9801_nextshow/nextshow_{hour_str}{minute_str}_fg_nlca.mov"
 
         # Send to d3
         address = os.getenv('D3_OSC_OUT_ADDRESS', '10.10.10.255')
         port = int(os.getenv('D3_OSC_OUT_PORT', 7500))
 
         osc_send(address, port, "/d3/indirection/nextshow", indirection)
-        print(f"[Showtime] Sent indirection to d3: {indirection}")
 
         return showtime_str
 
@@ -224,8 +215,6 @@ def d3_section_hint_check() -> Optional[str]:
         else:
             truncated = section_hint
 
-        print(f"[Showtime] Section hint: {truncated}")
-
         # Send to Medialon via OSC
         address = os.getenv('AUTOMATION_OSC_OUT_ADDRESS', '10.10.10.255')
         port = int(os.getenv('AUTOMATION_OSC_OUT_PORT', 7411))
@@ -260,9 +249,6 @@ def d3_seq_time_check() -> str:
             # Trackposition is already a number
             trackposition = float(trackposition_value)
 
-        # Debug logging
-        print(f"[Showtime] Trackname: {trackname}, Trackposition: {trackposition} (raw: {trackposition_value})")
-
         if not trackname or trackname != "public":
             return "No presentations in this sequence"
 
@@ -274,9 +260,6 @@ def d3_seq_time_check() -> str:
         reset_start = parse_timecode(os.getenv('SEQ_TIME_RESET_START', '01:17:46:05'))
         reset_end = parse_timecode(os.getenv('SEQ_TIME_RESET_END', '01:19:31:05'))
         timeline_end = parse_timecode(os.getenv('SEQ_TIME_TIMELINE_END', '01:29:29.29'))
-
-        # Debug logging
-        print(f"[Showtime] Trackpos: {trackposition:.2f}s | Drone: {drone_deploy:.2f}s | Act2: {act2_start:.2f}s | ResetStart: {reset_start:.2f}s | ResetEnd: {reset_end:.2f}s | TimelineEnd: {timeline_end:.2f}s")
 
         # Determine countdown based on position
         if trackposition < drone_deploy:
