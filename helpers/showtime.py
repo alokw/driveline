@@ -196,29 +196,36 @@ def show_close_check() -> str:
         return "Error checking show close"
 
 
-def d3_section_hint_check() -> Optional[str]:
+def d3_section_hint_check(path: str, value) -> Optional[str]:
     """
-    Parse d3 section hint and send to Medialon
+    Parse d3 section hint and send to Medialon (OSC callback)
+
+    Args:
+        path: OSC path (should be /d3/showcontrol/sectionhint)
+        value: Section hint value from d3
 
     Returns:
         Truncated section hint string, or None
     """
     try:
-        section_hint = get_osc_value('/d3/showcontrol/sectionhint')
-        if not section_hint or not isinstance(section_hint, str):
+        if path != '/d3/showcontrol/sectionhint':
+            return None
+
+        if not value or not isinstance(value, str):
             return None
 
         # Extract text after "/" if present
-        if "/" in section_hint:
-            truncated = section_hint.split("/")[-1].strip()
+        if "/" in value:
+            truncated = value.split("/")[-1].strip()
         else:
-            truncated = section_hint
+            truncated = value
 
         # Send to Medialon via OSC
         address = os.getenv('AUTOMATION_OSC_OUT_ADDRESS', '10.10.10.255')
         port = int(os.getenv('AUTOMATION_OSC_OUT_PORT', 7411))
 
         osc_send(address, port, "/red/fyi", truncated)
+        print(f"[Showtime] Section hint forwarded to Medialon: {truncated}")
 
         return truncated
 
@@ -297,12 +304,12 @@ def d3_seq_time_check() -> str:
             return f"Time to Timeline End: {format_time_diff(to_timeline_end)}"
 
         else:
-            # After timeline end - wrap around
-            time_from_end = trackposition - timeline_end
+            # After reset - wrap around
+            time_from_end = timeline_end - trackposition
             to_act2 = time_from_end + act2_start
             to_drone = time_from_end + drone_deploy
             return f"Time to Act 2: {format_time_diff(to_act2)}\nTime to Drone Deploy: {format_time_diff(to_drone)}"
-
+        
     except Exception as e:
         print(f"[Showtime] Error checking sequence time: {e}")
         return "Error checking sequence time"

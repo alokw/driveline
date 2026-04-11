@@ -277,14 +277,12 @@ def background_showtime_check():
             next_show = seq_showtime_check()
             show_close = show_close_check()
             seq_fyi = d3_seq_time_check()
-            section_hint = d3_section_hint_check()
 
             # Emit updates to all clients
             socketio.emit('showtime_update', {
                 'next_showtime': next_show,
                 'show_close_countdown': show_close,
-                'seq_time_fyi': seq_fyi,
-                'section_hint': section_hint
+                'seq_time_fyi': seq_fyi
             })
 
         except Exception as e:
@@ -324,10 +322,12 @@ def start_osc_listeners():
     for path in important_paths:
         osc_db.register_callback(path, osc_update_callback)
 
-    # Register StageTimer OSC callback
+    # Register specialized OSC callbacks
     osc_db.register_callback('/stagetimer', handle_stagetimer_osc)
+    osc_db.register_callback('/d3/showcontrol/sectionhint', d3_section_hint_check)
     print(f"[OSC] Registered callbacks for {len(important_paths)} OSC paths")
     print("[OSC] Registered StageTimer OSC callback for /stagetimer")
+    print("[OSC] Registered Section Hint OSC callback for /d3/showcontrol/sectionhint")
 
 
 def start_background_tasks():
