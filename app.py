@@ -150,7 +150,7 @@ def handle_get_showtime_data():
         'next_showtime': seq_showtime_check(),
         'show_close_countdown': show_close_check(),
         'seq_time_fyi': d3_seq_time_check(),
-        'section_hint': d3_section_hint_check()
+        'section_hint': get_osc_value('/showtime/section_hint')
     }
     emit('showtime_update', data)
 
@@ -277,12 +277,14 @@ def background_showtime_check():
             next_show = seq_showtime_check()
             show_close = show_close_check()
             seq_fyi = d3_seq_time_check()
+            section_hint = get_osc_value('/showtime/section_hint')
 
             # Emit updates to all clients
             socketio.emit('showtime_update', {
                 'next_showtime': next_show,
                 'show_close_countdown': show_close,
-                'seq_time_fyi': seq_fyi
+                'seq_time_fyi': seq_fyi,
+                'section_hint': section_hint
             })
 
         except Exception as e:

@@ -10,6 +10,7 @@ A professional web-based show control system for integrating and managing live s
 - **Component System**: Jinja2 macros for reusable, clean dashboard components
 - **Advanced Crossfades**: 60Hz background crossfading for smooth audio/video transitions
 - **Showtime Management**: Automated showtime scheduling with d3 indirection generation
+- **Section Hint Display**: Real-time d3 section hint parsing, display, and Medialon forwarding
 - **Countdown Displays**: Live countdowns to show close, show moments, and sequence cues
 - **Data Logging**: Automatic Google Sheets logging of all control actions
 - **Debug Interface**: Comprehensive debug page showing all OSC data in real-time

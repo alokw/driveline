@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, time as dt_time, timezone
 from typing import List, Optional, Tuple
 import re
 
-from .osc import osc_send, get_osc_value
+from .osc import osc_send, get_osc_value, osc_db
 
 
 # Global showtime storage
@@ -142,6 +142,9 @@ def seq_showtime_check() -> Optional[str]:
 
         osc_send(address, port, "/d3/indirection/nextshow", indirection)
 
+        # Store in OSC database for dashboard display
+        osc_db.set("/showtime/next", showtime_str)
+
         return showtime_str
 
     except Exception as e:
@@ -225,7 +228,9 @@ def d3_section_hint_check(path: str, value) -> Optional[str]:
         port = int(os.getenv('AUTOMATION_OSC_OUT_PORT', 7411))
 
         osc_send(address, port, "/red/fyi", truncated)
-        print(f"[Showtime] Section hint forwarded to Medialon: {truncated}")
+
+        # Store truncated value in OSC database at separate path for dashboard display
+        osc_db.set("/showtime/section_hint", truncated)
 
         return truncated
 
@@ -293,15 +298,6 @@ def d3_seq_time_check() -> str:
             # After presenter, before reset
             to_reset = reset_start - trackposition
             return f"Time to Reset: {format_time_diff(to_reset)}"
-
-        elif trackposition < reset_end:
-            # During reset
-            return "Reset in Progress"
-
-        elif trackposition < timeline_end:
-            # After reset, before timeline end
-            to_timeline_end = timeline_end - trackposition
-            return f"Time to Timeline End: {format_time_diff(to_timeline_end)}"
 
         else:
             # After reset - wrap around

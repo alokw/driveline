@@ -79,26 +79,6 @@ socket.on('osc_update', (data) => {
     updateOSCValue(data.path, data.value);
 });
 
-// Showtime updates
-socket.on('showtime_update', (data) => {
-    console.log('[Socket.IO] Showtime update:', data);
-    updateShowtimeDisplays(data);
-});
-
-// All OSC values (initial load)
-socket.on('all_osc_values', (data) => {
-    console.log('[Socket.IO] Received all OSC values:', Object.keys(data).length, 'paths');
-    Object.entries(data).forEach(([path, value]) => {
-        updateOSCValue(path, value);
-    });
-});
-
-// Action results
-socket.on('action_result', (data) => {
-    console.log('[Socket.IO] Action result:', data);
-    showActionResult(data);
-});
-
 /**
  * Update connection status indicator
  */

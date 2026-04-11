@@ -35,17 +35,13 @@ class OSCDatabase:
             old_value = self._data.get(path)
             self._data[path] = value
 
-            # Trigger callbacks if value changed or callback is new
-            if old_value != value:
-                # Debug: Log important value changes
-                if 'heartbeat' in path or 'trackposition' in path:
-                    print(f"[OSC Database] Updated: {path} = {value}")
-
-                for callback in self._callbacks.get(path, []):
-                    try:
-                        callback(path, value)
-                    except Exception as e:
-                        print(f"[OSC Database] Callback error for {path}: {e}")
+        # Trigger callbacks if value changed or callback is new (OUTSIDE the lock to prevent deadlock)
+        if old_value != value:
+            for callback in self._callbacks.get(path, []):
+                try:
+                    callback(path, value)
+                except Exception as e:
+                    print(f"[OSC Database] Callback error for {path}: {e}")
 
     def get(self, path: str, default: Any = None) -> Any:
         """Get the current value for an OSC path"""

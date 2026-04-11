@@ -46,4 +46,4 @@ services:
       - .:/app  # Mount entire app directory for hot-reload
     env_file:
       - .env
-    command: ["python", "app.py"]  # Run Flask directly with auto-reload
+    command: ["python", "-u", "app.py"]  # Run Flask with unbuffered output
