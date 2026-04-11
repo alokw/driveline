@@ -196,6 +196,10 @@ GOOGLE_CREDENTIALS_JSON='{"type": "service_account", ...}'  # Service account JS
 #### StageTimer.io
 - **Actions**: start_timer, stop_timer, reset_timer, update_timer, enable_blackout, disable_blackout
 - **Update Timer**: Set custom minutes and seconds
+- **OSC Forwarding**: Listens for OSC messages from d3 at `/stagetimer` and forwards to StageTimer
+  - **String messages**: `/stagetimer "start_timer"` → Forwards as HTTP action
+  - **List messages**: `/stagetimer ["update_timer", 4, 20]` → Forwards as update_timer with 4:20
+  - Automatic bidirectional integration between d3 triggers and StageTimer
 
 ### Showtime Scheduling
 
@@ -303,6 +307,7 @@ Monitored OSC paths:
 /d3/showcontrol/sectionhint
 /d3/showcontrol/playmode
 /d3/showcontrol/trackposition
+/stagetimer
 ```
 
 ## Architecture
