@@ -318,9 +318,9 @@ def stagetimer_control(action: str, minutes: Optional[int] = None, seconds: Opti
 
         # Build URL based on action
         if action == "update_timer" and minutes is not None and seconds is not None:
-            url = f"{base_url}action{suffix}&action=update_timer&minutes={minutes}&seconds={seconds}"
+            url = f"{base_url}{action}{suffix}&minutes={minutes}&seconds={seconds}"
         else:
-            url = f"{base_url}action{suffix}&action={action}"
+            url = f"{base_url}{action}{suffix}"
 
         print(f"[StageTimer] Sending action: {action}")
         response = get_request(url)
