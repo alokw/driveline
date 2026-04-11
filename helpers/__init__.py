@@ -11,7 +11,7 @@ from .devices import (
     d3_cue_go, d3_cue_go_clean,
     eventmaster_preset_prvw_by_name, eventmaster_alltrans, eventmaster_preset_prgm_by_name,
     millumin_launch_column_by_name,
-    stagetimer_control
+    stagetimer_control, handle_stagetimer_osc
 )
 from .showtime import (
     seq_showtime_set, get_next_showtime, seq_showtime_check,
@@ -28,7 +28,7 @@ __all__ = [
     'd3_cue_go', 'd3_cue_go_clean',
     'eventmaster_preset_prvw_by_name', 'eventmaster_alltrans', 'eventmaster_preset_prgm_by_name',
     'millumin_launch_column_by_name',
-    'stagetimer_control',
+    'stagetimer_control', 'handle_stagetimer_osc',
     # Showtime
     'seq_showtime_set', 'get_next_showtime', 'seq_showtime_check',
     'show_close_check', 'd3_section_hint_check', 'd3_seq_time_check',

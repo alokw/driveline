@@ -19,7 +19,7 @@ from helpers import (
     get_osc_value, get_all_osc_values,
     d3_cue_go, d3_cue_go_clean,
     eventmaster_preset_prgm_by_name, eventmaster_preset_prvw_by_name, eventmaster_alltrans,
-    millumin_launch_column_by_name, stagetimer_control,
+    millumin_launch_column_by_name, stagetimer_control, handle_stagetimer_osc,
     seq_showtime_set, seq_showtime_check, show_close_check,
     d3_section_hint_check, d3_seq_time_check,
     log_action
@@ -324,7 +324,10 @@ def start_osc_listeners():
     for path in important_paths:
         osc_db.register_callback(path, osc_update_callback)
 
+    # Register StageTimer OSC callback
+    osc_db.register_callback('/stagetimer', handle_stagetimer_osc)
     print(f"[OSC] Registered callbacks for {len(important_paths)} OSC paths")
+    print("[OSC] Registered StageTimer OSC callback for /stagetimer")
 
 
 def start_background_tasks():

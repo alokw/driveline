@@ -329,3 +329,43 @@ def stagetimer_control(action: str, minutes: Optional[int] = None, seconds: Opti
     except Exception as e:
         print(f"[StageTimer] Error sending control: {e}")
         return False
+
+
+def handle_stagetimer_osc(path: str, value) -> None:
+    """
+    Handle incoming OSC messages from d3 at /stagetimer path
+    Parses value and forwards to StageTimer via HTTP
+
+    Args:
+        path: OSC path (should be /stagetimer)
+        value: OSC value - either string (action) or list [action, minutes, seconds]
+    """
+    try:
+        if path != '/stagetimer':
+            return
+
+        print(f"[StageTimer OSC] Received: {value}")
+
+        # Parse the value based on type
+        if isinstance(value, str):
+            # Simple action string
+            stagetimer_control(value)
+            print(f"[StageTimer OSC] Forwarded action: {value}")
+
+        elif isinstance(value, list) and len(value) >= 1:
+            # List: [action, minutes, seconds]
+            action = value[0]
+            minutes = value[1] if len(value) > 1 else None
+            seconds = value[2] if len(value) > 2 else None
+
+            if action == "update_timer" and minutes is not None and seconds is not None:
+                stagetimer_control(action, minutes, seconds)
+                print(f"[StageTimer OSC] Forwarded: {action} {minutes}:{seconds}")
+            else:
+                stagetimer_control(action)
+                print(f"[StageTimer OSC] Forwarded action: {action}")
+        else:
+            print(f"[StageTimer OSC] Unknown value format: {value}")
+
+    except Exception as e:
+        print(f"[StageTimer OSC] Error handling message: {e}")
