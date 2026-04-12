@@ -18,6 +18,33 @@ Developed specifically for use by the #RuCrew. Many functions and features are b
 - **Debug Interface**: Real-time OSC data monitoring
 - **Docker Deployment**: Containerized for easy deployment
 
+## Screenshots
+
+### Main Dashboard
+![Main Dashboard showing showtime countdowns, d3 cue controls, and StageTimer](./screenshots/01-main-dashboard.png)
+
+*The main dashboard provides real-time showtime data, quick access to d3 cues, StageTimer controls, and show schedule buttons.*
+
+### Status Page
+![Status Page showing OSC listeners, system indicators, and automation values](./screenshots/02-status-page.png)
+
+*Monitor show status and automation values in a real-time heads-up display that can be fed to a multi-view.*
+
+### Advanced Controls
+![Advanced Controls page with EventMaster presets, Millumin columns, and d3 advanced cues](./screenshots/03-advanced-controls.png)
+
+*Access advanced device controls including EventMaster preset management and Millumin column launching.*
+
+### Debug Page
+![Debug Page showing real-time OSC database with all monitored paths and values](./screenshots/04-debug-page.png)
+
+*Comprehensive debug interface showing all incoming/outgoing OSC messages and system state.*
+
+### Component System
+![Jinja2 macro component examples and clean HTML structure](./screenshots/05-component-system.png)
+
+*The component system uses Jinja2 macros for reusable, maintainable UI components.*
+
 ## Quick Start
 
 ### Prerequisites
