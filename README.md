@@ -2,6 +2,8 @@
 
 A web-based show control system for integrating d3 media servers, automation systems, StageTimer.io, Barco EventMaster, and Millumin via OSC and HTTP protocols.
 
+Developed specifically for use by the #RuCrew. Many functions and features are built specifically for that project, but can be easily removed from template pages and streamlined for general use.
+
 ## Features
 
 - **Real-Time Dashboard**: Live updates via Socket.IO
@@ -35,18 +37,9 @@ A web-based show control system for integrating d3 media servers, automation sys
    ```
 
 2. **Set up Google Sheets credentials**
-   
-   **Option A: Paste JSON in .env (Recommended)**
    - Go to Google Cloud Console → IAM & Admin → Service Accounts
    - Create service account, click "Keys" → "Create New Key" → JSON
    - Copy entire JSON and paste into `.env` as `GOOGLE_CREDENTIALS_JSON`
-   
-   **Option B: Use credentials file**
-   ```bash
-   mkdir -p config
-   # Copy service account JSON to config/google_credentials.json
-   ```
-   
    Share your Google Sheet with the service account email.
 
 3. **Run with Docker**
@@ -89,7 +82,7 @@ GOOGLE_CREDENTIALS_JSON='{"type": "service_account", ...}'  # Service account JS
 
 - **Main Dashboard** (`/`): Showtime data, quick controls, d3 cues, StageTimer
 - **Status Page** (`/status`): System status, OSC listeners, automation values
-- **Advanced Controls** (`/advanced`): EventMaster presets, Millumin columns, advanced d3 cues
+- **Advanced Controls** (`/advanced`): EventMaster presets, Millumin columns
 - **Debug Page** (`/debug`): Real-time OSC database view
 
 ### Device Controls
@@ -99,14 +92,15 @@ GOOGLE_CREDENTIALS_JSON='{"type": "service_account", ...}'  # Service account JS
 - **Clean Cue**: 60Hz audio/video crossfades (audio out → video out → trigger → video in → audio in)
 
 #### EventMaster
-- Preview preset → 100ms delay → Transition
+- Recall and Take Presets
+- Optional helper to Recall preset → 100ms delay → Transition
 
 #### Millumin
 - Launch columns by name
 
 #### StageTimer.io
 - Actions: start_timer, stop_timer, reset_timer, update_timer, enable_blackout, disable_blackout
-- **OSC Forwarding**: Listens for messages from d3 at `/stagetimer` and forwards to StageTimer
+- **OSC Forwarding**: Listens for messages from d3 at `/stagetimer` and forwards to StageTimer using their RPC API
   - String: `/stagetimer "start_timer"` → HTTP action
   - List: `/stagetimer ["update_timer", 4, 20]` → update_timer with 4:20
 
@@ -114,10 +108,10 @@ GOOGLE_CREDENTIALS_JSON='{"type": "service_account", ...}'  # Service account JS
 
 Set showtimes via comma-separated lists: `09:00, 10:30, 12:00, 13:30`
 
-The system automatically finds the next showtime, generates d3 indirection strings, and sends to d3 via OSC:
+The system automatically finds the next showtime, generates d3 indirection strings, and sends to d3 via OSC. This is used to automatically update the time of the next showing that is presented on-screen as a call-to-action for guests passing by:
 
 ```
-objects/videofile/9801_nextshow/nextshow_{HH}_{MM}_fg_nlca.mov
+objects/videofile/9801_nextshow/nextshow_{HH}{MM}_fg_nlca.mov
 ```
 
 ### Component System
