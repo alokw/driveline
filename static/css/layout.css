@@ -150,9 +150,20 @@
     gap: 1rem;
 }
 
+.dashboard-two-col-50-50 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
 @media (min-width: 768px) {
     .dashboard-two-col {
         grid-template-columns: 3fr 2fr; /* 60% / 40% */
+        grid-template-areas: "left right";
+    }
+
+    .dashboard-two-col-50-50 {
+        grid-template-columns: 2fr 2fr; /* 60% / 40% */
         grid-template-areas: "left right";
     }
 

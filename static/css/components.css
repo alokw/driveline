@@ -136,6 +136,31 @@
     border-color: #4a5568;
 }
 
+
+.button-green {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #14532d;
+}
+
+.button-green:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #166534;
+}
+
+
+.button-red {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-color: #7f1d1d;
+}
+
+.button-red:hover {
+    background-color: var(--color-bg-elevated);
+    border-color: #991b1b;
+}
+
+
 /* StageTimer button variants with colored borders */
 .button-stagetimer-start {
     background-color: var(--color-bg-tertiary);
@@ -443,6 +468,60 @@
 .info-cell-extra-padding {
     padding-bottom: 0.5rem;
 }
+
+/* Info Table — Large Modifier (used in status.html) */
+.info-table--large .info-table td {
+    padding: 1.25rem 1rem;
+}
+
+.info-table--large .info-table td h3 {
+    font-size: 0.75rem;
+    margin-bottom: 0.05rem;
+}
+
+.info-table--large .info-cell-large .display-value {
+    font-size: 2.5rem;
+    min-height: 2.5rem;
+}
+
+.info-table--large .info-cell-large .display-value:not(.multiline) {
+    font-weight: 200;
+}
+
+.info-table--large .info-table tr:nth-child(3) .display-value {
+    color: hsl(221, 35%, 50%);
+    font-size: 1.5rem;
+}
+
+.info-table--large .info-cell-small .display-value {
+    font-size: 1.5rem;
+    min-height: 2.5rem;
+    color: hsl(221, 35%, 50%);
+    font-weight: 200;
+}
+
+.info-table--large .info-cell-large .display-value.multiline {
+    font-size: 5rem;
+}
+
+.info-cell-motion {
+    text-align: center;
+    padding: 0.75rem 1rem;
+}
+
+.info-cell-motion .display-value {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-warning);
+    letter-spacing: 0.12em;
+    animation: motion-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes motion-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.45; }
+}
+
 
 .debug-table th,
 .debug-table td {
