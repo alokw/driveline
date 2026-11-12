@@ -1,4 +1,10 @@
 # Production configuration (optimized, no hot-reload)
+#
+# WARNING: UNTESTED / NOT WORKING. This mode has not been actively developed or
+# tested and is known not to start correctly (the gunicorn worker class below
+# does not exist, and gunicorn would skip the OSC listener/background task
+# startup in app.py). Use development mode instead: docker-compose up
+#
 # Use this for production: docker-compose -f docker-compose.prod.yml up
 # For development with hot-reload, use: docker-compose.yml (default)
 version: '3.8'
@@ -10,7 +16,7 @@ services:
     restart: unless-stopped
     network_mode: host
     environment:
-      - TZ=America/New_York
+      - TZ=${TZ:-America/New_York}
       - FLASK_ENV=production
       - FLASK_DEBUG=0
       - FLASK_HOST=0.0.0.0

@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.DS_Store
 .claude/
 CLAUDE_bu.md
 CLAUDE.md

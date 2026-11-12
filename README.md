@@ -177,16 +177,20 @@ Background threads send OSC values at 60Hz (~16.666ms) for smooth transitions:
 
 ## Docker Deployment
 
-### Development Mode (Default)
+### Development Mode (Default, Recommended)
 ```bash
 docker-compose up
 ```
+This is the only mode that has been actively developed and tested. Use it for all deployments, including show sites.
+
 - Hot-reload enabled
 - Debug mode on
 - Port mapped for network access
 - Accessible from other devices: `http://[HOST_IP]:5000`
 
-### Production Mode
+### Production Mode (Untested, Not Working)
+> **Warning:** Production mode has not been actively developed or tested, and it currently does not start correctly. Use development mode instead.
+
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```
@@ -198,7 +202,7 @@ docker-compose -f docker-compose.prod.yml up -d
 
 ### OSC Not Working
 1. Check firewall allows UDP ports
-2. Verify device IPs in `.env` (use specific IPs, not `.255`)
+2. Verify device IPs in `.env`. Specific device IPs are the most reliable. Subnet broadcast addresses (e.g. `10.10.10.255`) are supported and work well in practice, but delivery depends on your network setup, so YMMV. Prefer a subnet broadcast over `255.255.255.255`. Look for `[OSC Sender] Error sending message` in the logs.
 3. Check network connectivity: `docker exec driveline-dev ping -c 2 10.10.10.101`
 4. Verify container running: `docker ps | grep driveline`
 

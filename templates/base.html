@@ -52,8 +52,8 @@
     </footer>
     -->
 
-    <!-- Socket.IO -->
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <!-- Socket.IO (v4.5.4, served locally so the dashboard works offline) -->
+    <script src="{{ url_for('static', filename='js/vendor/socket.io.min.js') }}"></script>
 
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/socket.js') }}"></script>

@@ -172,7 +172,9 @@ class OSCSender:
         """Actually send an OSC message via UDP"""
         try:
             # Create UDP client
-            client = SimpleUDPClient(msg['address'], msg['port'])
+            # allow_broadcast only permits sending to broadcast addresses (e.g. x.x.x.255);
+            # it has no effect on unicast sends to specific device IPs
+            client = SimpleUDPClient(msg['address'], msg['port'], allow_broadcast=True)
 
             # Send message
             value = msg['value']

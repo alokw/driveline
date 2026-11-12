@@ -1,6 +1,6 @@
 # Default Development configuration with hot-reload
-# Use this for development: docker-compose up
-# For production, use: docker-compose -f docker-compose.prod.yml up
+# This is the supported, tested way to run Driveline: docker-compose up
+# (docker-compose.prod.yml exists but is untested and currently not working.)
 version: '3.8'
 
 services:
@@ -13,7 +13,7 @@ services:
       - "${D3_OSC_IN_PORT:-7400}:${D3_OSC_IN_PORT:-7400}/udp"
       - "${AUTOMATION_OSC_IN_PORT:-7587}:${AUTOMATION_OSC_IN_PORT:-7587}/udp"
     environment:
-      - TZ=America/New_York
+      - TZ=${TZ:-America/New_York}
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - FLASK_HOST=0.0.0.0
